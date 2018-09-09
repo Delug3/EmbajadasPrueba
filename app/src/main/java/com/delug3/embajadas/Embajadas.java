@@ -89,6 +89,7 @@ public class Embajadas extends AppCompatActivity {
         longitud = edtlong.getText().toString();
         latitud = edtlat.getText().toString();
         Date today = new Date();
+        //Fecha formateada segun pdf
         SimpleDateFormat formato = new SimpleDateFormat("dd-MM hh:mm");
         fecha = formato.format(today);
 
