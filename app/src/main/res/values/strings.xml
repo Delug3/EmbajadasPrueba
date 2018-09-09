@@ -1,0 +1,6 @@
+<resources>
+    <string name="app_name">Embajadas</string>
+    <string name="titulo_gps_maps">Map</string>
+
+    <string name="titulo_actividad_embajadas">Embajadas</string>
+</resources>
