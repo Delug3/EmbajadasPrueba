@@ -12,11 +12,14 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 public class Embajadas extends AppCompatActivity {
     String SQLiteQuery;
     SQLiteDatabase SQLITEDATABASE;
     EditText edtlong,edtlat;
-    String longitud,latitud;
+    String longitud,latitud,fecha;
     Boolean EditVacio ;
     Button btnbuscar;
     @Override
@@ -36,9 +39,12 @@ public class Embajadas extends AppCompatActivity {
 
             @Override
             public void onClick(View view) {
+
+                Context context = getApplicationContext();
                 String longvalor = edtlong.getText().toString();
                 String latvalor = edtlat.getText().toString();
-                Context context = getApplicationContext();
+
+
                 //CharSequence text = "Buscando...";
               // int duration = Toast.LENGTH_SHORT;
 
@@ -48,17 +54,21 @@ public class Embajadas extends AppCompatActivity {
                 //toast.show();
                 //toast2.show();
 
+
                 //crear base de datos y llamar metodo para los gettext con la info de los editext
 
                 DBCreate();
 
                 SubmitDataSQLiteDB();
 
-                //prueba coordenadas manuales
+                //prueba coordenadas manuales y fecha
                 Intent intent = new Intent(context,GPSMaps.class);
                 intent.putExtra("LONGITUD", longvalor);
                 intent.putExtra("LATITUD", latvalor);
+                intent.putExtra("FECHA", fecha);
+
                 context.startActivity(intent);
+
 
             }
         });
@@ -68,7 +78,7 @@ public class Embajadas extends AppCompatActivity {
 
         SQLITEDATABASE = openOrCreateDatabase("EmbajadasDB", Context.MODE_PRIVATE, null);
 
-        SQLITEDATABASE.execSQL("CREATE TABLE IF NOT EXISTS EmbajadasGPS(id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, longitud VARCHAR, latitud VARCHAR);");
+        SQLITEDATABASE.execSQL("CREATE TABLE IF NOT EXISTS EmbajadasGPS(id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, longitud VARCHAR, latitud VARCHAR,fecha VARCHAR);");
 
         //NO TOCAR! funciona perfecto
         //añadir fecha para registro en historial(despues de fix a nearbylocations)
@@ -78,13 +88,16 @@ public class Embajadas extends AppCompatActivity {
 
         longitud = edtlong.getText().toString();
         latitud = edtlat.getText().toString();
+        Date today = new Date();
+        SimpleDateFormat formato = new SimpleDateFormat("dd-MM hh:mm");
+        fecha = formato.format(today);
 
-        SiEditEstaVacio( longitud,latitud);
+        SiEditEstaVacio( longitud,latitud,fecha);
 
         if(EditVacio == true)
         {
 
-            SQLiteQuery = "INSERT INTO EmbajadasGPS (longitud,latitud) VALUES('"+longitud+"', '"+latitud+"');";
+            SQLiteQuery = "INSERT INTO EmbajadasGPS (longitud,latitud,fecha) VALUES('"+longitud+"','"+latitud+"', '"+fecha+"');";
 
             SQLITEDATABASE.execSQL(SQLiteQuery);
 
@@ -99,7 +112,7 @@ public class Embajadas extends AppCompatActivity {
         }
     }
 
-    public void SiEditEstaVacio(String longitud,String latitud ){
+    public void SiEditEstaVacio(String longitud,String latitud,String fecha ){
 
         if(TextUtils.isEmpty(longitud) || TextUtils.isEmpty(latitud)){
 
